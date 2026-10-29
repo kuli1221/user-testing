@@ -7,7 +7,7 @@ create table participants (
   created_at timestamptz not null default now(),
   completed_at timestamptz,
   consent boolean not null check (consent),
-  age_group text check (age_group in ('<20','20-29','30-39','40-49','50+')),
+  age_group text check (age_group in ('18-19','20-29','30-39','40-49','50+')),
   gender text check (gender in ('kvinne','mann','annet','vil_ikke_oppgi')),
   device_class text not null check (device_class in ('mouse','touch')),
   viewport_w integer,
