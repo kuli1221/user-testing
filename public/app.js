@@ -19,15 +19,15 @@ const para = (t) => t.split('\n').filter(Boolean).map((s) => h('p', {}, s));
 
 // Viser en skjerm og venter på klikk. validate() returnerer feilmelding eller ''.
 const next = (nodes, label, validate) =>
-  new Promise((res) => {
-    const err = h('p', { class: 'err' });
-    const btn = h('button', { class: 'primary', onclick: () => {
-      const m = validate ? validate() : '';
-      if (m) { err.textContent = m; return; }
-      res();
-    } }, label);
-    show(...nodes, err, btn);
-  });
+    new Promise((res) => {
+      const err = h('p', { class: 'err' });
+      const btn = h('button', { class: 'primary', onclick: () => {
+          const m = validate ? validate() : '';
+          if (m) { err.textContent = m; return; }
+          res();
+        } }, label);
+      show(...nodes, err, btn);
+    });
 
 async function api(path, body) {
   let err;
@@ -71,7 +71,7 @@ function genTrials(seed) {
   const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const practice = [mk('near'), mk('far')].map((t, i) => ({ ...t, is_practice: true, trial_number: i }));
   const real = shuffle([...Array(4)].flatMap(() => [mk('near'), mk('far')]))
-    .map((t, i) => ({ ...t, is_practice: false, trial_number: i }));
+      .map((t, i) => ({ ...t, is_practice: false, trial_number: i }));
   return [...practice, ...real];
 }
 
@@ -79,18 +79,18 @@ function genTrials(seed) {
 const consent = () => {
   const cb = h('input', { type: 'checkbox' });
   return next([h('h1', {}, T.samtykke_tittel), ...para(T.samtykke_tekst),
-    h('label', {}, cb, ' ' + T.samtykke_avkrysning)], T.samtykke_knapp,
-    () => (cb.checked ? '' : 'Du må krysse av for å fortsette.'));
+        h('label', {}, cb, ' ' + T.samtykke_avkrysning)], T.samtykke_knapp,
+      () => (cb.checked ? '' : 'Du må krysse av for å fortsette.'));
 };
 
 async function demographics() {
   const sel = (opts) => h('select', {}, h('option', { value: '' }, '–'),
-    ...Object.entries(opts).map(([v, l]) => h('option', { value: v }, l)));
+      ...Object.entries(opts).map(([v, l]) => h('option', { value: v }, l)));
   const age = sel(T.alder_valg), sex = sel(T.kjonn_valg);
   for (;;) {
     await next([h('p', {}, T.demografi_intro),
-      h('label', { class: 'field' }, T.label_alder, age), h('label', { class: 'field' }, T.label_kjonn, sex)],
-      T.neste_knapp, () => (age.value && sex.value ? '' : 'Velg et alternativ i begge felt.'));
+          h('label', { class: 'field' }, T.label_alder, age), h('label', { class: 'field' }, T.label_kjonn, sex)],
+        T.neste_knapp, () => (age.value && sex.value ? '' : 'Velg et alternativ i begge felt.'));
     try {
       const r = await api('participants', {
         consent: true, age_group: age.value, gender: sex.value,
@@ -105,8 +105,9 @@ async function demographics() {
 
 async function runBlock(b) {
   const uiKey = b.interface === 'buttons' ? 'knapper' : 'slider';
+  const taskKey = b.task === 'numeric' ? 'numerisk' : 'perseptuell';
   await next([h('p', { class: 'step' }, `Del ${b.block_index + 1} av 4`),
-    ...para(T[`instruksjon_${uiKey}_${b.task}`])], T.start_knapp);
+    ...para(T[`instruksjon_${uiKey}_${taskKey}`])], T.start_knapp);
   const out = [], stage = h('div', { class: 'stage' }), head = h('p', { class: 'step' });
   for (const t of genTrials(S.pid * 10 + b.block_index)) {
     if (!t.is_practice && t.trial_number === 0) await next([h('p', {}, T.ovingsforsok_ferdig)], T.start_knapp);
@@ -126,12 +127,12 @@ async function rate(b) {
   const qs = [['ease', 'sporsmal_enkelhet'], ['precision', 'sporsmal_presisjon'], ['satisfaction', 'sporsmal_tilfredshet']];
   const ans = {};
   const rows = qs.map(([k, tk]) => h('fieldset', {}, h('legend', {}, T[tk]),
-    h('div', { class: 'scale' }, ...[1, 2, 3, 4, 5, 6, 7].map((n) => h('label', {},
-      h('input', { type: 'radio', name: k, value: n, onchange: () => { ans[k] = n; } }), h('span', {}, String(n)))))));
+      h('div', { class: 'scale' }, ...[1, 2, 3, 4, 5, 6, 7].map((n) => h('label', {},
+          h('input', { type: 'radio', name: k, value: n, onchange: () => { ans[k] = n; } }), h('span', {}, String(n)))))));
   const label = T[b.interface === 'buttons' ? 'label_knapper' : 'label_slider'];
   await next([h('p', {}, T.blokk_ferdig_melding), h('h1', {}, label), h('p', {}, T.vurdering_intro),
-    h('p', { class: 'note' }, T.skala_lav + ' · ' + T.skala_hoy), ...rows],
-    T.neste_knapp, () => (qs.every(([k]) => ans[k]) ? '' : 'Svar på alle tre spørsmålene.'));
+        h('p', { class: 'note' }, T.skala_lav + ' · ' + T.skala_hoy), ...rows],
+      T.neste_knapp, () => (qs.every(([k]) => ans[k]) ? '' : 'Svar på alle tre spørsmålene.'));
   await persist('ratings', { participant_id: S.id, interface: b.interface, task: b.task, ...ans });
 }
 
@@ -141,12 +142,12 @@ async function finish() {
     ['preferred_perceptual', 'sporsmal_pref_perseptuell']];
   const ans = {};
   const rows = qs.map(([k, tk]) => h('fieldset', {}, h('legend', {}, T[tk]),
-    ...opts.map(([v, l]) => h('label', { class: 'opt' },
-      h('input', { type: 'radio', name: k, onchange: () => { ans[k] = v; } }), ' ' + l))));
+      ...opts.map(([v, l]) => h('label', { class: 'opt' },
+          h('input', { type: 'radio', name: k, onchange: () => { ans[k] = v; } }), ' ' + l))));
   const ta = h('textarea', { maxlength: '500', rows: '4' });
   await next([h('p', {}, T.preferanse_intro), ...rows,
-    h('label', { class: 'field' }, T.kommentar_label, ta), h('p', { class: 'note' }, T.kommentar_advarsel)],
-    T.send_knapp, () => (qs.every(([k]) => ans[k]) ? '' : 'Svar på alle tre spørsmålene.'));
+        h('label', { class: 'field' }, T.kommentar_label, ta), h('p', { class: 'note' }, T.kommentar_advarsel)],
+      T.send_knapp, () => (qs.every(([k]) => ans[k]) ? '' : 'Svar på alle tre spørsmålene.'));
   await persist('finish', { participant_id: S.id, ...ans, comments: ta.value.trim() || null });
   window.removeEventListener('beforeunload', warn);
   show(h('h1', {}, T.takk_tittel), h('p', {}, T.takk_tekst));

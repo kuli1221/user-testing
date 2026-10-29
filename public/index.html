@@ -1,1 +1,31 @@
-<!doctype html><meta charset="utf-8"><title>Slider vs knapper</title><p>Frontend kommer i steg 3.</p>
+<!doctype html>
+<html lang="nb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Brukertest</title>
+    <style>
+        :root { color-scheme: light dark; --fg:#1a1a1a; --bg:#fff; --muted:#666; --accent:#2457d6; --line:#c8c8c8; --err:#c0262d; }
+        @media (prefers-color-scheme: dark) { :root { --fg:#eee; --bg:#16181d; --muted:#9aa; --accent:#6d93ff; --line:#444; --err:#ff6b72; } }
+        * { box-sizing: border-box; }
+        body { margin:0; font:18px/1.5 system-ui,sans-serif; color:var(--fg); background:var(--bg); }
+        #app { max-width:36rem; margin:0 auto; padding:1.5rem 1rem 4rem; }
+        h1 { font-size:1.5rem; } .step,.note { color:var(--muted); font-size:.9rem; }
+        button, select, textarea { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:.6rem 1rem; min-height:48px; }
+        button.primary { background:var(--accent); color:#fff; border-color:var(--accent); margin-top:1rem; cursor:pointer; }
+        select, textarea { width:100%; } label.field { display:block; margin:1rem 0; }
+        fieldset { border:1px solid var(--line); border-radius:8px; margin:1rem 0; padding:.8rem 1rem; }
+        legend { padding:0 .4rem; } .opt { display:block; padding:.3rem 0; }
+        .scale { display:flex; justify-content:space-between; gap:.25rem; }
+        .scale label { display:flex; flex-direction:column; align-items:center; min-width:2.2rem; padding:.4rem; }
+        .scale input { width:1.4rem; height:1.4rem; }
+        .err { color:var(--err); min-height:1.5em; } .stage { margin:1rem 0; }
+        input[type=checkbox] { width:1.2rem; height:1.2rem; vertical-align:middle; }
+    </style>
+</head>
+<body>
+<div id="app"><p>Laster …</p></div>
+<script src="task.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@ export default route('POST', async (req, res) => {
   const b = req.body ?? {};
   if (b.consent !== true) fail('Samtykke mangler');
   if (!oneOf(b.device_class, ['mouse', 'touch'])) fail('device_class');
-  if (!oneOf(b.age_group, ['<20', '20-29', '30-39', '40-49', '50+'])) fail('age_group');
+  if (!oneOf(b.age_group, ['18-19', '20-29', '30-39', '40-49', '50+'])) fail('age_group');
   if (!oneOf(b.gender, ['kvinne', 'mann', 'annet', 'vil_ikke_oppgi'])) fail('gender');
   const vw = isInt(b.viewport_w, 0, 20000) ? b.viewport_w : null;
   const vh = isInt(b.viewport_h, 0, 20000) ? b.viewport_h : null;
